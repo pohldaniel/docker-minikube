@@ -9,3 +9,5 @@ https://storage.googleapis.com/minikube/releases/latest/minikube-installer.exe
 https://www.docker.com/products/docker-desktop
 
 https://www.virtualbox.org/
+
+https://www.cygwin.com/
