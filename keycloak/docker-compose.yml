@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  nginx:
+    container_name: nginx-keycloak-proxy
+    image: nginx:latest
+    ports: 
+      - 8443:443
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
+      - ./certs/cert.cer:/etc/nginx/external/certs/cert.cer
+      - ./certs/cert.key:/etc/nginx/external/certs/cert.key
+  keycloak:
+    image: jboss/keycloak
+    container_name: keycloak
+    ports: 
+      - 8080:8080
+    environment:
+      - KEYCLOAK_PASSWORD=admin
+      - KEYCLOAK_USER=admin
+      - PROXY_ADDRESS_FORWARDING=true

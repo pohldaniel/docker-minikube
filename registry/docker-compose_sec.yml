@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  nginx:  
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: docker01
+    container_name: nginx-registry-proxy
+    ports: 
+      - 5000:443
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
+      - ./certs/cert.cer:/etc/nginx/external/certs/cert.cer
+      - ./certs/cert.key:/etc/nginx/external/certs/cert.key
+      - ./auth/nginx.htpasswd:/etc/nginx/external/auth/nginx.htpasswd
+    links:
+    - registry:registry  
+  registry:
+    image: registry
+    container_name: registry
+    volumes:
+      - ./tmp:/var/lib/registry
+    environment:
+      - SETTINGS_FLAVOR=local
+      - STORAGE_PATH=/registry

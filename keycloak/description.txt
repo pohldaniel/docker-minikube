@@ -1,0 +1,59 @@
+cd C:\Timera\SPU_Timera-V3.3\workspaceKub\keycloak
+
+https://medium.com/faun/kubernetes-auth-e2f342a5f269
+
+
+
+http://localhost:8080
+https://localhost:8443
+https://localhost:8443/auth/realms/master
+
+
+//first create the needed certificates using "Cygwin" or something similar like "MinGW" or "MSYS2"
+
+openssl genrsa -out keycloak-ca.key 4096
+openssl req -x509 -new -nodes -key keycloak-ca.key -sha256 -days 3650 -out keycloak-ca.pem -subj "/CN=keycloak-ca"
+openssl req -new -newkey rsa:4096 -nodes -keyout cert.key -out cert.csr -subj "/CN=keycloak" -addext "subjectAltName=DNS:localhost,IP:127.0.0.1,IP:10.0.2.2"
+openssl x509 -req -CA keycloak-ca.pem -CAkey keycloak-ca.key -CAcreateserial -in cert.csr -out cert.cer -days 3650 -extfile <(printf "subjectAltName=DNS:localhost,IP:127.0.0.1,IP:10.0.2.2\nbasicConstraints=CA:TRUE")
+openssl x509 -in cert.cer -text -noout
+
+** IMPORTANT: copy the keycloak-ca.pem to "Usersr\name\.minikube\certs"
+** copy the files "cert.cer" and "cert.key" to docker-minikube\keycloak\certs
+
+-- the following ist executetd with the windows cmd
+-- change the directory to "docker-minikube\keycloak"
+
+docker-compose up -d
+
+	** or use docker run -p "8080:8080" -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -e PROXY_ADDRESS_FORWARDING=true jboss/keycloak
+			  docker build . -t nginx-proxy -f ./Dockerfile
+			  docker run -d -p 8443:443 --link registry:registry --name nginx-registry-proxy nginx-proxy
+
+-- wait until keycloak is running (it need about 3 minitues)
+-- enter the admin console "https://localhost:8443" enter Username:admin Password:admin
+-- Open Clients and create the a new client with Client ID "kubernetes-cluster"
+
+-- follow this https://superuser.com/questions/363036/how-to-map-an-ip-adress-to-localhost instruction, use the IP: 10.0.2.2
+-- if everything is working then the following curl should work
+
+curl -k -X POST https://10.0.2.2:8443/auth/realms/master/protocol/openid-connect/token -d grant_type=password -d client_id=kubernetes-cluster -d username=admin -d password=admin -d scope=openid -d response_type=id_token
+
+-- copy the "id_token" out of the response to "https://jwt.io/" and copy the values of "iss" and "sub" to the right place in "rolebinding.yaml"
+-- lunch minkube with the following parameters. (Maybe minikube has to be deleted before.)
+
+minikube start --driver=virtualbox --no-vtx-check --extra-config=apiserver.oidc-issuer-url=https://10.0.2.2:8443/auth/realms/master --extra-config=apiserver.oidc-client-id=kubernetes-cluster
+minikube ip 
+
+kubectl apply -f rolebinding.yaml
+
+-- request for another token and replace the "id_token" and the "minikube-ip" in the following command 
+
+curl -H "Authorization: Bearer <id_token>" -k https://<minikube-ip>:8443/api/v1/pods
+
+-- for more customized oidc with keycloak read here https://medium.com/faun/kubernetes-auth-e2f342a5f269
+
+
+
+
+
+

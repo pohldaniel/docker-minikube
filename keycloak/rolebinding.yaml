@@ -1,0 +1,22 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: custom-role
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces","pods"]
+    verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: custom-admin-access
+subjects:
+- kind: User
+  #Important: grant access to "iss#sub" out of the jwt token
+  name: "https://10.0.2.2:8443/auth/realms/master#74032ea7-1b10-4c07-8f84-51a93c42a192"
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: custom-role
+  apiGroup: rbac.authorization.k8s.io
