@@ -5,5 +5,7 @@ The Repository shows how to set up a local docker registry, see resgistry and re
 Furthemor an example of Minikube with OIDC via keycloak is given see keycloak and keycloak/description.txt. The used tools are listed below.
 
 https://storage.googleapis.com/minikube/releases/latest/minikube-installer.exe
+
 https://www.docker.com/products/docker-desktop
+
 https://www.virtualbox.org/
