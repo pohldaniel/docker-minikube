@@ -29,7 +29,7 @@ docker-compose up -d
 			  docker build . -t nginx-proxy -f ./Dockerfile
 			  docker run -d -p 8443:443 --link registry:registry --name nginx-registry-proxy nginx-proxy
 
--- wait until keycloak is running (it need about 3 minitues)
+-- wait until keycloak is running (it need about 3 minutes)
 -- enter the admin console "https://localhost:8443" enter Username:admin Password:admin
 -- Open Clients and create the a new client with Client ID "kubernetes-cluster"
 
