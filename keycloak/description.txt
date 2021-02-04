@@ -33,7 +33,7 @@ curl -k -X POST https://10.0.2.2:8443/auth/realms/master/protocol/openid-connect
 minikube start --driver=virtualbox --no-vtx-check --extra-config=apiserver.oidc-issuer-url=https://10.0.2.2:8443/auth/realms/master --extra-config=apiserver.oidc-client-id=kubernetes-cluster
 minikube ip 
 
-kubectl apply -f rolebinding.yaml
+kubectl apply -f global-role-rolebinding.yaml
 
 -- request for another token and replace the "id_token" and the "minikube-ip" in the following command 
 
@@ -41,8 +41,6 @@ curl -H "Authorization: Bearer <id_token>" -k https://<minikube-ip>:8443/api/v1/
 
 -- for more customized oidc with keycloak read here https://medium.com/faun/kubernetes-auth-e2f342a5f269
 
-
-
-
-
-
+	** remove the prefix with --extra-config=apiserver.oidc-username-prefix=-
+	** add a custom attribute to the token and bind it with --extra-config=apiserver.oidc-username-claim=name 
+	** applay "local-role-rolebinding.yaml" or "hybrid-role-rolebinding.yaml"
