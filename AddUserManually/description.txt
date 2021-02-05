@@ -1,0 +1,48 @@
+//first create the needed certificates using "Cygwin" or something similar like "MinGW" or "MSYS2"
+
+** Use the ca.crt and ca.key out of "Users\name\.minikube" for the signing step
+
+openssl req -new -newkey rsa:4096 -nodes -keyout alice.key -out alice.csr -subj "/CN=alice"
+openssl x509 -req -CA ca.crt -CAkey ca.key -CAcreateserial -in alice.csr -out alice.crt -days 3650
+
+openssl req -new -newkey rsa:4096 -nodes -keyout john.key -out john.csr -subj "/CN=john"
+openssl x509 -req -CA ca.crt -CAkey ca.key -CAcreateserial -in john.csr -out john.crt -days 3650
+
+
+--copy the files to new created directories "Users\name\.minikube\profiles\john" and "Users\name\.minikube\profiles\alice"
+
+-- There are two possibilities to add the an user:
+	1. As seperate file:
+		
+		kubectl --kubeconfig alice.kubeconfig config set-cluster minikube --certificate-authority C:\Users\name\.minikube\ca.crt --server https://<minikube-ip>:8443
+		kubectl --kubeconfig alice.kubeconfig config set-credentials john --client-certificate C:\Users\name\.minikube\profiles\alice\alice.crt --client-key C:\Users\name\.minikube\profiles\alice\alice.key
+		kubectl --kubeconfig alice.kubeconfig config set-context alice-kubernetes --cluster=minikube --user alice
+		
+	2. Entry direct into C:\Users\name\.kube\config
+	
+		kubectl config set-credentials john --client-certificate C:\Users\name\.minikube\profiles\john\john.crt --client-key C:\Users\name\.minikube\profiles\john\john.key
+		kubectl config set-context john-kubernetes --cluster=minikube --user john
+		kubectl config use-context john-kubernetes
+		
+--copy the file "alice.kubeconfig" to the directory "C:/Users/name/.kube"
+
+set KUBECONFIG=C:/Users/name/.kube/config;C:/Users/name/.kube/alice.kubeconfig
+
+kubectl config get-contexts
+kubectl config use-context john-kubernetes
+kubectl get pods
+kubectl config use-context minikube
+kubectl apply -f john-role-rolebinding.yaml
+kubectl config use-context john-kubernetes
+kubectl get pods
+
+--change the directory to "Users/name/.minikube/profiles/john" and test out of "Cygwin" (cmd url doesn't support certificates)
+
+curl -k https://<minikube-ip>:8443/api/v1/namespaces/default/pods --cert john.crt --key john.key --ssl-no-revoke
+curl https://<minikube-ip>:8443/api/v1/namespaces/default/pods --cert john.crt --key john.key --cacert ../../ca.crt --ssl-no-revoke
+
+------------------------------------------------------------------------------
+kubectl get rolebindings -n default
+kubectl get roles -n default
+kubectl get clusterrolebindings
+kubectl get clusterroles

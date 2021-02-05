@@ -4,8 +4,8 @@
 	//openssl req -x509 -new -nodes -key registry-ca.key -sha256 -days 3650 -out registry-ca.pem -subj "/CN=docker-registry-ca" //
 	//**************************************************************************************************************************//
 
-** IMPORTANT: There are two possibilities: 1. Use the ca.crt and ca.key out of "Usersr\name\.minikube" for the signing step
-										   2. Use the lines above and copy the registry-ca.pem to "Usersr\name\.minikube\certs"
+** IMPORTANT: There are two possibilities: 1. Use the ca.crt and ca.key out of "Users\name\.minikube" for the signing step
+										   2. Use the lines above and copy the registry-ca.pem to "Users\name\.minikube\certs"
 
 openssl req -new -newkey rsa:4096 -nodes -keyout cert.key -out cert.csr -subj "/CN=docker-registry" -addext "subjectAltName=DNS:localhost,IP:127.0.0.1,IP:10.0.2.2"
 openssl x509 -req -CA registry-ca.pem -CAkey registry-ca.key -CAcreateserial -in cert.csr -out cert.cer -days 3650 -extfile <(printf "subjectAltName=DNS:localhost,IP:127.0.0.1,IP:10.0.2.2\nbasicConstraints=critical,CA:TRUE\nextendedKeyUsage = serverAuth\nsubjectKeyIdentifier=hash")

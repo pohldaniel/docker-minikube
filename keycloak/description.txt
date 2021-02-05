@@ -6,7 +6,7 @@ openssl req -new -newkey rsa:4096 -nodes -keyout cert.key -out cert.csr -subj "/
 openssl x509 -req -CA keycloak-ca.pem -CAkey keycloak-ca.key -CAcreateserial -in cert.csr -out cert.cer -days 3650 -extfile <(printf "subjectAltName=DNS:localhost,IP:127.0.0.1,IP:10.0.2.2\nbasicConstraints=CA:TRUE")
 openssl x509 -in cert.cer -text -noout
 
-** IMPORTANT: copy the keycloak-ca.pem to "Usersr\name\.minikube\certs"
+** IMPORTANT: copy the keycloak-ca.pem to "Users\name\.minikube\certs"
 ** copy the files "cert.cer" and "cert.key" to docker-minikube\keycloak\certs
 
 -- the following ist executetd with the windows cmd
