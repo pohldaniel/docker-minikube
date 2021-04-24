@@ -36,7 +36,7 @@ kubectl apply -f john-role-rolebinding.yaml
 kubectl config use-context john-kubernetes
 kubectl get pods
 
---change the directory to "Users/name/.minikube/profiles/john" and test out of "Cygwin" (cmd url doesn't support certificates)
+--change the directory to "Users/name/.minikube/profiles/john" and test out of "Cygwin" (cmd curl doesn't support certificates)
 
 curl -k https://<minikube-ip>:8443/api/v1/namespaces/default/pods --cert john.crt --key john.key --ssl-no-revoke
 curl https://<minikube-ip>:8443/api/v1/namespaces/default/pods --cert john.crt --key john.key --cacert ../../ca.crt --ssl-no-revoke
