@@ -31,7 +31,7 @@ docker run -d -p 5000:443 --link registry:registry --name nginx-registry-proxy n
 docker run -d --name registry -v /tmp:/var/lib/registry -e "SETTINGS_FLAVOR=local" -e "STORAGE_PATH=/registry" registry
 
 
--- in case evrything works fine the registry is reachable at
+-- in case everything works fine the registry is reachable at
 https://localhost:5000/v2/_catalog
 
 
