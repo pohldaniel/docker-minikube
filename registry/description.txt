@@ -1,11 +1,11 @@
 //first create the needed certificates using "Cygwin" or something similar like "MinGW" or "MSYS2"
-	//**************************************************************************************************************************//
-	//openssl genrsa -out registry-ca.key 4096																					//
-	//openssl req -x509 -new -nodes -key registry-ca.key -sha256 -days 3650 -out registry-ca.pem -subj "/CN=docker-registry-ca" //
-	//**************************************************************************************************************************//
+//**************************************************************************************************************************//
+//openssl genrsa -out registry-ca.key 4096
+//openssl req -x509 -new -nodes -key registry-ca.key -sha256 -days 3650 -out registry-ca.pem -subj "/CN=docker-registry-ca" //
+//**************************************************************************************************************************//
 
 ** IMPORTANT: There are two possibilities: 1. Use the ca.crt and ca.key out of "Users\name\.minikube" for the signing step
-										   2. Use the lines above and copy the registry-ca.pem to "Users\name\.minikube\certs"
+					   2. Use the lines above and copy the registry-ca.pem to "Users\name\.minikube\certs"
 
 openssl req -new -newkey rsa:4096 -nodes -keyout cert.key -out cert.csr -subj "/CN=docker-registry" -addext "subjectAltName=DNS:localhost,IP:127.0.0.1,IP:10.0.2.2"
 openssl x509 -req -CA registry-ca.pem -CAkey registry-ca.key -CAcreateserial -in cert.csr -out cert.cer -days 3650 -extfile <(printf "subjectAltName=DNS:localhost,IP:127.0.0.1,IP:10.0.2.2\nbasicConstraints=critical,CA:TRUE\nextendedKeyUsage = serverAuth\nsubjectKeyIdentifier=hash")
@@ -13,7 +13,7 @@ openssl x509 -req -CA registry-ca.pem -CAkey registry-ca.key -CAcreateserial -in
 openssl x509 -in cert.cer -text -noout
 
 ** copy the files "cert.cer" and "cert.key" to docker-minikube\registry\certs
-** Notice the "-extfile < (printf ...)" is added to the signing command and not the .csr creation command.
+** Notice the "-extfile < (printf ...)" is added to the signing command and not to the .csr creation command.
 
 -- the following ist executetd with the windows cmd
 -- change the directory to "docker-minikube\registry"
@@ -21,8 +21,8 @@ openssl x509 -in cert.cer -text -noout
 ** first approach: docker composer
 docker-compose up -d
 
-	***the build comand works with docker-compose_sec.yml and is for educational purposes. It invokes the "Dockerfile" and build the image
-	docker-compose build
+	(**the build comand works with docker-compose_sec.yml and is for educational purposes. It invokes the "Dockerfile" and build the image
+	docker-compose build)
 
 ** second approach: plain docker. Just for educational purposes :)
 docker build . -t nginx-proxy -f ./Dockerfile
