@@ -9,14 +9,14 @@ openssl x509 -in cert.cer -text -noout
 ** IMPORTANT: copy the keycloak-ca.pem to "Users\name\.minikube\certs"
 ** copy the files "cert.cer" and "cert.key" to docker-minikube\keycloak\certs
 
--- the following ist executetd with the windows cmd
+-- the following is executetd with the windows cmd
 -- change the directory to "docker-minikube\keycloak"
 
 docker-compose up -d
 
 	** or use docker run -p "8080:8080" -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -e PROXY_ADDRESS_FORWARDING=true jboss/keycloak
-			  docker build . -t nginx-proxy -f ./Dockerfile
-			  docker run -d -p 8443:443 --link registry:registry --name nginx-registry-proxy nginx-proxy
+		  docker build . -t nginx-proxy -f ./Dockerfile
+		  docker run -d -p 8443:443 --link registry:registry --name nginx-registry-proxy nginx-proxy
 
 -- wait until keycloak is running (it need about 3 minutes)
 -- enter the admin console "https://localhost:8443" enter Username:admin Password:admin
@@ -31,6 +31,8 @@ curl -k -X POST https://10.0.2.2:8443/auth/realms/master/protocol/openid-connect
 -- lunch minkube with the following parameters. (Maybe minikube has to be deleted before.)
 
 minikube start --driver=virtualbox --no-vtx-check --extra-config=apiserver.oidc-issuer-url=https://10.0.2.2:8443/auth/realms/master --extra-config=apiserver.oidc-client-id=kubernetes-cluster
+
+-- get the minikube ip
 minikube ip 
 
 kubectl apply -f global-role-rolebinding.yaml
