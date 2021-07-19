@@ -15,7 +15,7 @@ openssl x509 -req -CA ca.crt -CAkey ca.key -CAcreateserial -in john.csr -out joh
 	1. As seperate file:
 		
 		kubectl --kubeconfig alice.kubeconfig config set-cluster minikube --certificate-authority C:\Users\name\.minikube\ca.crt --server https://<minikube-ip>:8443
-		kubectl --kubeconfig alice.kubeconfig config set-credentials john --client-certificate C:\Users\name\.minikube\profiles\alice\alice.crt --client-key C:\Users\name\.minikube\profiles\alice\alice.key
+		kubectl --kubeconfig alice.kubeconfig config set-credentials alice --client-certificate C:\Users\name\.minikube\profiles\alice\alice.crt --client-key C:\Users\name\.minikube\profiles\alice\alice.key
 		kubectl --kubeconfig alice.kubeconfig config set-context alice-kubernetes --cluster=minikube --user alice
 		
 	2. Entry direct into C:\Users\name\.kube\config
